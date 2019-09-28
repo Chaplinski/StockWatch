@@ -31,6 +31,17 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
 
         Stock stock = stockList.get(position);
         holder.sSymbol.setText(stock.getSymbol());
+        holder.sCompany.setText(stock.getCompany());
+        double dPrice = stock.getCurrentPrice();
+        String sPrice = Double.toString(dPrice);
+        holder.dCurrentPrice.setText(sPrice);
+        double dChange = stock.getChangeToday();
+        String sChange = Double.toString(dChange);
+        holder.dChangeToday.setText(sChange);
+
     }
+
+    @Override
+    public int getItemCount(){ return stockList.size(); }
 
 }

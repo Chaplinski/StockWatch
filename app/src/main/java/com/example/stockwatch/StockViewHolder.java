@@ -9,8 +9,8 @@ public class StockViewHolder extends RecyclerView.ViewHolder {
 
     public TextView sSymbol;
     public TextView sCompany;
-    public TextView lCurrentPrice;
-    public TextView lChangeToday;
+    public TextView dCurrentPrice;
+    public TextView dChangeToday;
 
     public StockViewHolder(View view){
         super(view);
