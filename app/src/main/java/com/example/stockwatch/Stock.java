@@ -5,7 +5,8 @@ public class Stock {
     private String sSymbol;
     private String sCompany;
     private double dCurrentPrice;
-    private double dChangeToday;
+    private double dPriceChange;
+    private double dPercentChange;
 
     public String getSymbol(){ return sSymbol; }
 
@@ -19,8 +20,12 @@ public class Stock {
 
     public void setCurrentPrice(double newPrice){ this.dCurrentPrice = newPrice; }
 
-    public double getChangeToday(){ return dChangeToday; }
+    public double getPriceChange(){ return dPriceChange; }
 
-    public void setChangeToday(double newChange){ this.dChangeToday = newChange; }
+    public void setPriceChange(double priceChange){ this.dPriceChange = priceChange; }
+
+    public double getPercentChange(){ return dPercentChange; }
+
+    public void setPercentChange(double percentChange){ this.dPercentChange = percentChange; }
 
 }

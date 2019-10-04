@@ -34,10 +34,14 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
         holder.sCompany.setText(stock.getCompany());
         double dPrice = stock.getCurrentPrice();
         String sPrice = Double.toString(dPrice);
-        holder.dCurrentPrice.setText(sPrice);
-        double dChange = stock.getChangeToday();
-        String sChange = Double.toString(dChange);
-        holder.dChangeToday.setText(sChange);
+        holder.sCurrentPrice.setText(sPrice);
+        //get price and percent change and concatenate them
+        double dPriceChange = stock.getPriceChange();
+        String sPriceChange = Double.toString(dPriceChange);
+        double dPercentChange = stock.getPercentChange();
+        String sPercentChange = Double.toString(dPercentChange);
+        String sCollectiveChange = sPriceChange + sPercentChange;
+        holder.sCollectiveChange.setText(sCollectiveChange);
 
     }
 
