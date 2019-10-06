@@ -94,6 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 sStockSearched = input.getText().toString();
                 HashMap aMatchingCompanies = aSymbolsAndNames(sStockSearched);
                 Log.d(TAG, "onClick: size " + aMatchingCompanies);
+                if (aMatchingCompanies.size() > 1){
+                    //if more than one company fits the search then display selection
+                    createSelectorDialogBox(aMatchingCompanies);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -104,6 +108,36 @@ public class MainActivity extends AppCompatActivity {
         });
 
         builder.show();
+    }
+
+    private void createSelectorDialogBox(HashMap<String, String> aMatchingCompanies){
+        //for each item in hashmap - concatenate symbol and company name, create string list
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Make a selection");
+// add a list
+        String[] animals = {"horse", "cow", "camel", "sheep", "goat"};
+        builder.setItems(animals, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0: // horse
+                    case 1: // cow
+                    case 2: // camel
+                    case 3: // sheep
+                    case 4: // goat
+                }
+            }
+        });
+// create and show the alert dialog
+        builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private HashMap<String, String> aSymbolsAndNames(String sStockSearched){
