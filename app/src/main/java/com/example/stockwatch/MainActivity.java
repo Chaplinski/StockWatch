@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menuAddStock:
                 createStockDialogBox();
-                Toast.makeText(this, "ooo lala", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -93,9 +92,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 sStockSearched = input.getText().toString();
-                //ArrayList<String> listOfKeys = new ArrayList<String>();
-                List<String> listOfKeys = getAllKeysForValue(wCompanies, sStockSearched);
-                Log.d(TAG, "onClick: size " + listOfKeys.size());
+                HashMap aMatchingCompanies = aSymbolsAndNames(sStockSearched);
+                Log.d(TAG, "onClick: size " + aMatchingCompanies);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -108,29 +106,20 @@ public class MainActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private static <K, V> List<K> getAllKeysForValue(Map<K, V> mapOfWords, V value)
-    {
-        List<K> listOfKeys = null;
+    private HashMap<String, String> aSymbolsAndNames(String sStockSearched){
+        HashMap aMatchingCompanies = new HashMap<String, String>();
+        //String sCompanyName = wCompanies.get(sStockSearched);
 
-        //Check if Map contains the given value
-        if(mapOfWords.containsValue(value))
-        {
-            // Create an Empty List
-            listOfKeys = new ArrayList<>();
+        for(Map.Entry<String, String> entry : wCompanies.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
 
-            // Iterate over each entry of map using entrySet
-            for (Map.Entry<K, V> entry : mapOfWords.entrySet())
-            {
-                // Check if value matches with given value
-                if (entry.getValue().equals(value))
-                {
-                    // Store the key from entry to the list
-                    listOfKeys.add(entry.getKey());
-                    Log.d("tag", "getAllKeysForValue: " + entry.getKey());
-                }
+            Log.d(TAG, "aSymbolsAndNames: " + key);
+            if(key.contains(sStockSearched) || value.contains(sStockSearched)) {
+                aMatchingCompanies.put(key, value);
             }
         }
-        // Return the list of keys whose value matches with given value.
-        return listOfKeys;
+        return aMatchingCompanies;
     }
+
 }
