@@ -112,12 +112,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void createSelectorDialogBox(HashMap<String, String> aMatchingCompanies){
         //for each item in hashmap - concatenate symbol and company name, create string list
+        String[] aCompanies = new String[aMatchingCompanies.size()];
+        int i = 0;
+        for(Map.Entry<String, String> entry : aMatchingCompanies.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            String sConcatenated = key + " - " + value;
+            aCompanies[i] = sConcatenated;
+            i++;
+            // do what you have to do here
+            // In your case, another loop.
+        }
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Make a selection");
-// add a list
-        String[] animals = {"horse", "cow", "camel", "sheep", "goat"};
-        builder.setItems(animals, new DialogInterface.OnClickListener() {
+        // add a list
+        builder.setItems(aCompanies, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
@@ -129,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-// create and show the alert dialog
+        // create and show the alert dialog
         builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
