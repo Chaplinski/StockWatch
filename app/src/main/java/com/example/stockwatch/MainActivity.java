@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  implements InputDialog.InputDialogListener {
 
     private RecyclerView recyclerView;
     private StockAdapter mAdapter;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Log.d(TAG, "onCreate: ok");
         asyncLoadCompanies();
 
     }
@@ -73,82 +74,91 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void applyTexts(String input) {
+        //String input is where the value from the input is sent to the main activity
+        Log.d(TAG, "applyTexts: " + input);
+        createStockDialogBox();
+    }
+
     public void createStockDialogBox(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Stock Selection");
-        builder.setMessage("Please enter a Stock Symbol");
-
-        // Set up the input
-        final EditText input = new EditText(this);
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setGravity(Gravity.CENTER_HORIZONTAL);
-        input.setTextSize(24);
-        input.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        builder.setView(input);
-
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                sStockSearched = input.getText().toString();
-                HashMap aMatchingCompanies = aSymbolsAndNames(sStockSearched);
-                Log.d(TAG, "onClick: size " + aMatchingCompanies);
-                if (aMatchingCompanies.size() > 1){
-                    //if more than one company fits the search then display selection
-                    createSelectorDialogBox(aMatchingCompanies);
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
+        Log.d(TAG, "createStockDialogBox: ");
+        InputDialog inputDialog = new InputDialog();
+        inputDialog.show(getSupportFragmentManager(), "example dialog");
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Stock Selection");
+//        builder.setMessage("Please enter a Stock Symbol");
+//
+//        // Set up the input
+//        final EditText input = new EditText(this);
+//        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+//        input.setInputType(InputType.TYPE_CLASS_TEXT);
+//        input.setGravity(Gravity.CENTER_HORIZONTAL);
+//        input.setTextSize(24);
+//        input.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+//        builder.setView(input);
+//
+//        // Set up the buttons
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                sStockSearched = input.getText().toString();
+//                HashMap aMatchingCompanies = aSymbolsAndNames(sStockSearched);
+//                Log.d(TAG, "onClick: size " + aMatchingCompanies);
+//                if (aMatchingCompanies.size() > 1){
+//                    //if more than one company fits the search then display selection
+//                    String foo = createSelectorDialogBox(aMatchingCompanies);
+//                    Log.d(TAG, "onClick: foo " + foo);
+//                }
+//            }
+//        });
+//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//
+//        builder.show();
     }
 
-    private void createSelectorDialogBox(HashMap<String, String> aMatchingCompanies){
-        //for each item in hashmap - concatenate symbol and company name, create string list
-        String[] aCompanies = new String[aMatchingCompanies.size()];
-        int i = 0;
-        for(Map.Entry<String, String> entry : aMatchingCompanies.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-            String sConcatenated = key + " - " + value;
-            aCompanies[i] = sConcatenated;
-            i++;
-            // do what you have to do here
-            // In your case, another loop.
-        }
-        // setup the alert builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Make a selection");
-        // add a list
-        builder.setItems(aCompanies, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0: // horse
-                    case 1: // cow
-                    case 2: // camel
-                    case 3: // sheep
-                    case 4: // goat
-                }
-            }
-        });
-        // create and show the alert dialog
-        builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+//    private String createSelectorDialogBox(HashMap<String, String> aMatchingCompanies){
+//        //for each item in hashmap - concatenate symbol and company name, create string list
+//        final String[] aCompanies = new String[aMatchingCompanies.size()];
+//        int i = 0;
+//        for(Map.Entry<String, String> entry : aMatchingCompanies.entrySet()) {
+//            String key = entry.getKey();
+//            String value = entry.getValue();
+//            String sConcatenated = key + " - " + value;
+//            aCompanies[i] = sConcatenated;
+//            i++;
+//            // do what you have to do here
+//            // In your case, another loop.
+//        }
+//        // setup the alert builder
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Make a selection");
+//        // add a list
+//        builder.setItems(aCompanies, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Log.d(TAG, "onClick: which");
+////                this.toString();
+////                final Button input = new Button();
+//            }
+//        });
+//        // create and show the alert dialog
+//        builder.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.cancel();
+//            }
+//        });
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//        return null;
+//
+//    }
 
     private HashMap<String, String> aSymbolsAndNames(String sStockSearched){
         HashMap aMatchingCompanies = new HashMap<String, String>();
