@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-public class InputDialog extends AppCompatDialogFragment {
+public class SelectorDialog extends AppCompatDialogFragment {
     private EditText input;
     private InputDialogListener listener;
 
@@ -31,7 +30,7 @@ public class InputDialog extends AppCompatDialogFragment {
         input.setGravity(Gravity.CENTER_HORIZONTAL);
         input.setTextSize(24);
         input.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-        builder.setMessage("Please enter a Stock Symbol:");
+
         builder.setView(view)
                 .setTitle("Stock Selection")
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
