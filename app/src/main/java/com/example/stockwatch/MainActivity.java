@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     private HashMap<String, String> wCompanies = new HashMap<>();
     private String sStockSearched = "";
     private String TAG = "MAINACTIVITY";
+    private DatabaseHandler databaseHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate: ok");
         asyncLoadCompanies();
+        databaseHandler = new DatabaseHandler(this);
 
     }
 
@@ -156,8 +158,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "onClick: which");
-//                this.toString();
-//                final Button input = new Button();
+                //take aCompanies[which] and add it to the DB
                 Toast.makeText(MainActivity.this, aCompanies[which], Toast.LENGTH_SHORT).show();
 
 
