@@ -158,7 +158,11 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "onClick: which");
-                //take aCompanies[which] and add it to the DB
+                //TODO get aCompanies[which] substring and add it to the DB
+                Stock stock = new Stock();
+                stock.setSymbol("FB"); //TODO
+                stock.setCompany("Facebook"); //TODO
+                databaseHandler.addStock(stock);
                 Toast.makeText(MainActivity.this, aCompanies[which], Toast.LENGTH_SHORT).show();
 
 

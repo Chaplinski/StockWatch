@@ -93,6 +93,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         database.insert(TABLE_NAME, null, values);
         Log.d(TAG, "addStock: Add Complete");
+        Log.d(TAG, "addStock: " + stock.getSymbol());
+        Log.d(TAG, "addStock: " + stock.getCompany());
     }
 
     void updateStock(Stock stock) {
