@@ -50,10 +50,13 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         if(bNetworkCheck()){
             Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
             //for each stock in aDBLoadedStocks execute StockDownloader async task
+            //we only need the stock symbol to look up the stock
             for(int i = 0; i < aDBLoadedStocks.size(); i++){
                 //execute async stock downloader
+                asyncLoadStocks(aStoredStockSymbols[i]);
             }
         } else {
+            //here we need aDBLoadedStocks since we do not have internet connection and need both the symbol and company name
             Toast.makeText(this, "NO SIRE", Toast.LENGTH_SHORT).show();
             //show no network error dialog
             //put all stocks on display with price, change, and percent equal to 0
@@ -88,6 +91,10 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
 
     private void asyncLoadCompanies(){
         new AsyncLoaderCompanyNames(this).execute();
+    }
+
+    private void asyncLoadStocks(String sStockSymbol){
+        new AsyncLoaderStockValues(sStockSymbol).execute();
     }
 
     public void updateData(HashMap<String, String> wData) {

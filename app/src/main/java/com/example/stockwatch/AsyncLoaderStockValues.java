@@ -22,42 +22,35 @@ import java.util.Locale;
 
 public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
 
-    private static final String TAG = "AsyncLoaderTask";
+    private static final String TAG = "AsyncLoaderStockValues";
     @SuppressLint("StaticFieldLeak")
-    private MainActivity mainActivity;
+    private String sStockSymbol;
     private HashMap<String, String> wData = new HashMap<>();
-    private Bitmap bitmap;
 
-    private static final String weatherURL = "http://api.openweathermap.org/data/2.5/weather";
-    private static final String iconUrl = "http://openweathermap.org/img/w/";
-    //////////////////////////////////////////////////////////////////////////////////
-    // Sign up to get your API Key at:  https://home.openweathermap.org/users/sign_up
-    private static final String yourAPIKey = "6bfc226f3d6885de5b239a8c33047524";
+    private static final String stockURL = " https://cloud.iexapis.com/stable/stock/";
+    private static final String yourAPIKey = "pk_8f31f65b562a4dbc9d3dd847757cbf7f";
     //
     //////////////////////////////////////////////////////////////////////////////////
 
 
-    AsyncLoaderStockValues(MainActivity ma) {
-        mainActivity = ma;
+    AsyncLoaderStockValues(String sIncomingStockSymbol) {
+        sStockSymbol = sIncomingStockSymbol;
     }
 
-    @Override
-    protected void onPostExecute(String s) {
-        mainActivity.updateData(wData, bitmap);
-    }
+//    @Override
+//    protected void onPostExecute(String s) {
+//        mainActivity.updateData(wData);
+//    }
 
     @Override
     protected String doInBackground(String... params) { // 0 == city, 1 == fshrenheit
+        String sLocalURL = stockURL;
+        sLocalURL += sStockSymbol + "/quote";
+        Uri.Builder buildURL = Uri.parse(sLocalURL).buildUpon();
 
-        boolean fahrenheit = Boolean.parseBoolean(params[1]);
-
-        Uri.Builder buildURL = Uri.parse(weatherURL).buildUpon();
-
-        buildURL.appendQueryParameter("q", params[0]);
-        buildURL.appendQueryParameter("units", (fahrenheit ? "imperial" : "metric"));
-        buildURL.appendQueryParameter("appid", yourAPIKey);
+        buildURL.appendQueryParameter("token", yourAPIKey);
         String urlToUse = buildURL.build().toString();
-        Log.d(TAG, "doInBackground: " + urlToUse);
+        Log.d(TAG, "doInBackground2: " + urlToUse);
 
         StringBuilder sb = new StringBuilder();
         try {
@@ -73,7 +66,7 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
                 sb.append(line).append('\n');
             }
 
-            Log.d(TAG, "doInBackground: " + sb.toString());
+            Log.d(TAG, "doInBackground3: " + sb.toString());
 
         } catch (Exception e) {
             Log.e(TAG, "doInBackground: ", e);
@@ -112,9 +105,6 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
             long dt = jObjMain.getLong("dt");
             String date = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a", Locale.getDefault()).format(new Date(dt * 1000));
             wData.put("DATE", date);
-
-            InputStream input = new java.net.URL(iconUrl + icon + ".png").openStream();
-            bitmap = BitmapFactory.decodeStream(input);
 
             Log.d(TAG, "onPostExecute: " + date);
 
