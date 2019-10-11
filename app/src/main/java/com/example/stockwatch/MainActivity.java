@@ -5,9 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ClipData;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -39,11 +42,48 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate: ok");
         asyncLoadCompanies();
         databaseHandler = new DatabaseHandler(this);
         aDBLoadedStocks = databaseHandler.loadStocks();
+        String[] aStoredStockSymbols = getStoredStockSymbols();
+        //check for network connection
+        if(bNetworkCheck()){
+            Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
+            //for each stock in aDBLoadedStocks execute StockDownloader async task
+            for(int i = 0; i < aDBLoadedStocks.size(); i++){
+                //execute async stock downloader
+            }
+        } else {
+            Toast.makeText(this, "NO SIRE", Toast.LENGTH_SHORT).show();
+            //show no network error dialog
+            //put all stocks on display with price, change, and percent equal to 0
+            //sort stock list
+            //notify adapter of changed dataset
+        }
 
+    }
+
+    private boolean bNetworkCheck(){
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private String[] getStoredStockSymbols(){
+        String[] aStoredStockSymbols = new String [aDBLoadedStocks.size()];
+        aDBLoadedStocks = databaseHandler.loadStocks();
+        for(int i = 0; i < aDBLoadedStocks.size(); i++){
+            String[] aRow = aDBLoadedStocks.get(i);
+            aStoredStockSymbols[i] = aRow[0];
+        }
+        return aStoredStockSymbols;
     }
 
     private void asyncLoadCompanies(){
