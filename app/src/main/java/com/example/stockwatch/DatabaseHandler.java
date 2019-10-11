@@ -116,31 +116,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.d(TAG, "deleteCountry: " + cnt);
     }
 
-//    void dumpDbToLog() {
-//        Cursor cursor = database.rawQuery("select * from " + TABLE_NAME, null);
-//        if (cursor != null) {
-//            cursor.moveToFirst();
-//
-//            Log.d(TAG, "dumpDbToLog: vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
-//            for (int i = 0; i < cursor.getCount(); i++) {
-//                String country = cursor.getString(0);
-//                String region = cursor.getString(1);
-//                String subRegion = cursor.getString(2);
-//                String capital = cursor.getString(3);
-//                int population = cursor.getInt(4);
-//                Log.d(TAG, "dumpDbToLog: " +
-//                        String.format("%s %-18s", COUNTRY + ":", country) +
-//                        String.format("%s %-18s", REGION + ":", region) +
-//                        String.format("%s %-18s", SUBREGION + ":", subRegion) +
-//                        String.format("%s %-18s", CAPITAL + ":", capital) +
-//                        String.format("%s %-18s", POPULATION + ":", population));
-//                cursor.moveToNext();
-//            }
-//            cursor.close();
-//        }
-//
-//        Log.d(TAG, "dumpDbToLog: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-//    }
+    void dumpDbToLog() {
+        Cursor cursor = database.rawQuery("select * from " + TABLE_NAME, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+
+            Log.d(TAG, "dumpDbToLog: vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+            for (int i = 0; i < cursor.getCount(); i++) {
+                String sSymbol = cursor.getString(0);
+                String sName = cursor.getString(1);
+                Log.d(TAG, "dumpDbToLog: " +
+                        String.format("%s %-18s", STOCKSYMBOL + ":", sSymbol) +
+                        String.format("%s %-18s", COMPANYNAME + ":", sName));
+                cursor.moveToNext();
+            }
+            cursor.close();
+        }
+
+        Log.d(TAG, "dumpDbToLog: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
+    }
 
     void shutDown() {
         database.close();

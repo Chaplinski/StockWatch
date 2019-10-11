@@ -31,9 +31,9 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     private RecyclerView recyclerView;
     private StockAdapter mAdapter;
     private HashMap<String, String> wCompanies = new HashMap<>();
-    private String sStockSearched = "";
     private String TAG = "MAINACTIVITY";
     private DatabaseHandler databaseHandler;
+    private ArrayList<String[]> aDBLoadedStocks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         Log.d(TAG, "onCreate: ok");
         asyncLoadCompanies();
         databaseHandler = new DatabaseHandler(this);
+        aDBLoadedStocks = databaseHandler.loadStocks();
 
     }
 
@@ -140,11 +141,15 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     private String createSelectorDialogBox(HashMap<String, String> aMatchingCompanies){
         //for each item in hashmap - concatenate symbol and company name, create string list
         final String[] aCompanies = new String[aMatchingCompanies.size()];
+        final String[] aSymbols = new String[aMatchingCompanies.size()];
+        final String[] aNames = new String[aMatchingCompanies.size()];
         int i = 0;
         for(Map.Entry<String, String> entry : aMatchingCompanies.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
             String sConcatenated = key + " - " + value;
+            aSymbols[i] = key;
+            aNames[i] = value;
             aCompanies[i] = sConcatenated;
             i++;
             // do what you have to do here
@@ -158,13 +163,12 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(TAG, "onClick: which");
-                //TODO get aCompanies[which] substring and add it to the DB
                 Stock stock = new Stock();
-                stock.setSymbol("FB"); //TODO
-                stock.setCompany("Facebook"); //TODO
+                stock.setSymbol(aSymbols[which]);
+                stock.setCompany(aNames[which]);
                 databaseHandler.addStock(stock);
-                Toast.makeText(MainActivity.this, aCompanies[which], Toast.LENGTH_SHORT).show();
 
+                databaseHandler.dumpDbToLog();
 
             }
         });
