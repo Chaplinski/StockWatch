@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     private RecyclerView recyclerView;
     private StockAdapter mAdapter;
     private HashMap<String, String> wCompanies = new HashMap<>();
+    private HashMap<String, String[]> wReturnedStocks = new HashMap<>();
     private String TAG = "MAINACTIVITY";
     private DatabaseHandler databaseHandler;
     private ArrayList<String[]> aDBLoadedStocks;
@@ -94,17 +95,17 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     }
 
     private void asyncLoadStocks(String sStockSymbol){
-        new AsyncLoaderStockValues(sStockSymbol).execute();
+        new AsyncLoaderStockValues(this, sStockSymbol).execute();
     }
 
-    public void updateData(HashMap<String, String> wData) {
-//        if (aData.isEmpty()) {
-//            Toast.makeText(this, "Please Enter a Valid City Name", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-        Log.d(TAG, "updateData: " + wData.size());
-
+    public void updateCompanyData(HashMap<String, String> wData) {
         wCompanies = new HashMap<String, String>(wData);
+
+    }
+
+    public void updateStockData(HashMap<String, String[]> wData) {
+        wReturnedStocks.putAll(wData);
+        Log.d(TAG, "updateStockData: " + wReturnedStocks.size());
 
     }
 

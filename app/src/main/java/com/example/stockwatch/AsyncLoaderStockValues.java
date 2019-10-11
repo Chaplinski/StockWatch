@@ -25,7 +25,8 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     private static final String TAG = "AsyncLoaderStockValues";
     @SuppressLint("StaticFieldLeak")
     private String sStockSymbol;
-    private HashMap<String, String> wData = new HashMap<>();
+    private HashMap<String, String[]> wData = new HashMap<>();
+    private MainActivity mainActivity;
 
     private static final String stockURL = " https://cloud.iexapis.com/stable/stock/";
     private static final String yourAPIKey = "pk_8f31f65b562a4dbc9d3dd847757cbf7f";
@@ -33,14 +34,15 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     //////////////////////////////////////////////////////////////////////////////////
 
 
-    AsyncLoaderStockValues(String sIncomingStockSymbol) {
+    AsyncLoaderStockValues(MainActivity ma, String sIncomingStockSymbol) {
+        mainActivity = ma;
         sStockSymbol = sIncomingStockSymbol;
     }
 
-//    @Override
-//    protected void onPostExecute(String s) {
-//        mainActivity.updateData(wData);
-//    }
+    @Override
+    protected void onPostExecute(String s) {
+        mainActivity.updateStockData(wData);
+    }
 
     @Override
     protected String doInBackground(String... params) { // 0 == city, 1 == fshrenheit
@@ -83,32 +85,21 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
 
         try {
             JSONObject jObjMain = new JSONObject(s);
+            String sKey = jObjMain.getString("symbol");
+            String sCompanyName = jObjMain.getString("companyName");
+            Double dLatestPrice = jObjMain.getDouble("latestPrice");
+            String sLatestPrice = dLatestPrice.toString();
+            Double dChange = jObjMain.getDouble("change");
+            String sChange = dChange.toString();
+            Double dChangePercent = jObjMain.getDouble("changePercent");
+            String sChangePercent = dChangePercent.toString();
 
-            JSONArray weather = jObjMain.getJSONArray("weather");
-            JSONObject jWeather = (JSONObject) weather.get(0);
-            wData.put("COND", jWeather.getString("main"));
-            wData.put("DESC", jWeather.getString("description"));
-            String icon = jWeather.getString("icon");
-
-            JSONObject jMain = jObjMain.getJSONObject("main");
-            wData.put("TEMP", jMain.getString("temp"));
-            wData.put("HUMID", jMain.getString("humidity"));
-
-            JSONObject jWind = jObjMain.getJSONObject("wind");
-            wData.put("WIND", jWind.getString("speed"));
-
-            wData.put("CITY", jObjMain.getString("name"));
-
-            JSONObject jSys = jObjMain.getJSONObject("sys");
-            wData.put("COUNTRY", jSys.getString("country"));
-
-            long dt = jObjMain.getLong("dt");
-            String date = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a", Locale.getDefault()).format(new Date(dt * 1000));
-            wData.put("DATE", date);
-
-            Log.d(TAG, "onPostExecute: " + date);
-
+            String[] aValue = {sCompanyName, sLatestPrice, sChange, sChangePercent};
+            //first variable is the stock symbol, which will be the key for the hashmap
+            wData.put(sKey, aValue);
+            Log.d(TAG, "parseJSON: "+ sKey);
         } catch (Exception e) {
+            Log.d(TAG, "parseJSON: exception caught");
             e.printStackTrace();
         }
     }
