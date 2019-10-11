@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     private RecyclerView recyclerView;
     private StockAdapter mAdapter;
     private HashMap<String, String> wCompanies = new HashMap<>();
-    private HashMap<String, String[]> wReturnedStocks = new HashMap<>();
+    private ArrayList<Stock> aStocks = new ArrayList<>();
     private String TAG = "MAINACTIVITY";
     private DatabaseHandler databaseHandler;
     private ArrayList<String[]> aDBLoadedStocks;
@@ -103,9 +103,10 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
 
     }
 
-    public void updateStockData(HashMap<String, String[]> wData) {
-        wReturnedStocks.putAll(wData);
-        Log.d(TAG, "updateStockData: " + wReturnedStocks.size());
+    public void updateStockData(Stock oIncomingStock) {
+        aStocks.add(oIncomingStock);
+        Log.d(TAG, "updateStockData: " + aStocks.size());
+
 
     }
 

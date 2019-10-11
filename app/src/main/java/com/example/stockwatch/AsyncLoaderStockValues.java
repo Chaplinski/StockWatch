@@ -27,6 +27,7 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     private String sStockSymbol;
     private HashMap<String, String[]> wData = new HashMap<>();
     private MainActivity mainActivity;
+    private Stock stock = new Stock();
 
     private static final String stockURL = " https://cloud.iexapis.com/stable/stock/";
     private static final String yourAPIKey = "pk_8f31f65b562a4dbc9d3dd847757cbf7f";
@@ -41,7 +42,7 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        mainActivity.updateStockData(wData);
+        mainActivity.updateStockData(stock);
     }
 
     @Override
@@ -84,20 +85,19 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     private void parseJSON(String s) {
 
         try {
+
             JSONObject jObjMain = new JSONObject(s);
-            String sKey = jObjMain.getString("symbol");
+            String sSymbol = jObjMain.getString("symbol");
             String sCompanyName = jObjMain.getString("companyName");
             Double dLatestPrice = jObjMain.getDouble("latestPrice");
-            String sLatestPrice = dLatestPrice.toString();
-            Double dChange = jObjMain.getDouble("change");
-            String sChange = dChange.toString();
+            Double dChangePrice = jObjMain.getDouble("change");
             Double dChangePercent = jObjMain.getDouble("changePercent");
-            String sChangePercent = dChangePercent.toString();
+            stock.setSymbol(sSymbol);
+            stock.setCompany(sCompanyName);
+            stock.setCurrentPrice(dLatestPrice);
+            stock.setPriceChange(dChangePrice);
+            stock.setPercentChange(dChangePercent);
 
-            String[] aValue = {sCompanyName, sLatestPrice, sChange, sChangePercent};
-            //first variable is the stock symbol, which will be the key for the hashmap
-            wData.put(sKey, aValue);
-            Log.d(TAG, "parseJSON: "+ sKey);
         } catch (Exception e) {
             Log.d(TAG, "parseJSON: exception caught");
             e.printStackTrace();
