@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +51,8 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         String[] aStoredStockSymbols = getStoredStockSymbols();
         recyclerView = findViewById(R.id.recycler);
         mAdapter = new StockAdapter(aStocks, this);
+        Log.d(TAG, "onCreate4: " + aStocks);
         recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
         //check for network connection
         if(bNetworkCheck()){
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
             //sort stock list
             //notify adapter of changed dataset
         }
+
+
 
     }
 
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         for(int i = 0; i < aDBLoadedStocks.size(); i++){
             String[] aRow = aDBLoadedStocks.get(i);
             aStoredStockSymbols[i] = aRow[0];
+
         }
         return aStoredStockSymbols;
     }
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
 
     private void asyncLoadStocks(String sStockSymbol){
         new AsyncLoaderStockValues(this, sStockSymbol).execute();
+
     }
 
     public void updateCompanyData(HashMap<String, String> wData) {
@@ -114,6 +118,8 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         aStocks.add(oIncomingStock);
         //TODO sort stock list
         //TODO notify adapter of changed dataset
+//        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Log.d(TAG, "updateStockData: " + aStocks.size());
 
 

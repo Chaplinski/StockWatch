@@ -25,7 +25,6 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     private static final String TAG = "AsyncLoaderStockValues";
     @SuppressLint("StaticFieldLeak")
     private String sStockSymbol;
-    private HashMap<String, String[]> wData = new HashMap<>();
     private MainActivity mainActivity;
     private Stock stock = new Stock();
 
