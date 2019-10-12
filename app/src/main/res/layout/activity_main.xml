@@ -8,6 +8,9 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:scrollbarSize="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

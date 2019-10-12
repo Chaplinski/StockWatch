@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,7 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity  implements InputDialog.InputDialogListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        View.OnLongClickListener, InputDialog.InputDialogListener {
 
     private RecyclerView recyclerView;
     private StockAdapter mAdapter;
@@ -75,6 +78,48 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
 
 
     }
+
+    @Override
+    public void onClick(View v) {  // click listener called by ViewHolder clicks
+        TextView thisSymbol = v.findViewById(R.id.textSymbol);
+        String sThisSymbol = thisSymbol.getText().toString();
+        String sURL = "http://www.marketwatch.com/investing/stock/" + sThisSymbol;
+
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(sURL));
+        startActivity(browserIntent);
+    }
+
+    // From OnLongClickListener
+    @Override
+    public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
+        // use this method to delete a note
+//        final TextView name = v.findViewById(R.id.name);
+//        final String thisTitle = name.getText().toString();
+//        final int position = recyclerView.getChildLayoutPosition(v);
+
+//        new AlertDialog.Builder(this)
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+//                .setMessage("Delete note \"" + thisTitle + "\"?")
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                       // saveNotes(true, thisTitle);
+//                        mAdapter.removeItem(position);
+//                    }
+//
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //remains empty
+//                    }
+//
+//                })
+//                .show();
+        return false;
+    }
+
+
 
     private boolean bNetworkCheck(){
         ConnectivityManager cm =
@@ -135,8 +180,12 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuAddStock:
-                createStockDialogBox();
-                return true;
+                if (bNetworkCheck()) {
+                    createStockDialogBox();
+                    return true;
+                } else {
+                    Toast.makeText(this, "SCOOPY DOOPY DOO", Toast.LENGTH_SHORT).show();
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

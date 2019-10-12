@@ -30,6 +30,8 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.stock_list_row, parent, false);
 
+        itemView.setOnClickListener(mainAct);
+        itemView.setOnLongClickListener(mainAct);
 
         return new StockViewHolder(itemView);
     }
@@ -51,6 +53,12 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
         String sCollectiveChange = "▲" + sPriceChange +" (" + sPercentChange + "%)";
         holder.sCollectiveChange.setText(sCollectiveChange);
 
+    }
+
+
+    public void removeItem(int position) {
+        stockList.remove(position);
+        // notifyItemRemoved(position);
     }
 
     @Override
