@@ -15,7 +15,7 @@
         android:layout_marginTop="8dp"
         android:text="AAPL"
         android:textColor="@color/fontGreen"
-        android:textSize="36sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,25 +39,26 @@
         android:id="@+id/textPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:text="135.72"
         android:textColor="@color/fontGreen"
-        android:textSize="28sp"
+        android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/textChange"
         app:layout_constraintStart_toEndOf="@+id/textSymbol"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textChange"
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         android:text="▲ 0.38 (0.28%)"
+        android:gravity="right"
         android:textColor="@color/fontGreen"
-        android:textSize="28sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textPrice"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

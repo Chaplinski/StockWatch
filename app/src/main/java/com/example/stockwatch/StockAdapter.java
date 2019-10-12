@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
     private static final String TAG ="StockAdapter";
     private List<Stock> stockList;
     private MainActivity mainAct;
+    private static DecimalFormat df2 = new DecimalFormat("#.##");
 
 
     public StockAdapter(List<Stock> stockList, MainActivity ma) {
@@ -44,9 +46,9 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
         //get price and percent change and concatenate them
         double dPriceChange = stock.getPriceChange();
         String sPriceChange = Double.toString(dPriceChange);
-        double dPercentChange = stock.getPercentChange();
-        String sPercentChange = Double.toString(dPercentChange);
-        String sCollectiveChange = sPriceChange + sPercentChange;
+        double dPercentChange = stock.getPercentChange() * 100;
+        String sPercentChange = df2.format(dPercentChange);
+        String sCollectiveChange = "▲" + sPriceChange +" (" + sPercentChange + "%)";
         holder.sCollectiveChange.setText(sCollectiveChange);
 
     }

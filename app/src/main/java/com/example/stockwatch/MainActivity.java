@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
                 stock.setSymbol(aSymbols[which]);
                 stock.setCompany(aNames[which]);
                 databaseHandler.addStock(stock);
-
+//TODO
                 databaseHandler.dumpDbToLog();
 
             }
@@ -245,6 +245,8 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         return null;
 
     }
