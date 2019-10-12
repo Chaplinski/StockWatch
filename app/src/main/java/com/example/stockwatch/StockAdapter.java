@@ -58,7 +58,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
 
     public void removeItem(int position) {
         stockList.remove(position);
-        // notifyItemRemoved(position);
+        notifyItemRemoved(position);
     }
 
     @Override

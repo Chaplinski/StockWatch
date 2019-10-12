@@ -19,11 +19,15 @@ public class GeneralDialog extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String getTitle = getArguments().getString("title");
         String getContent = getArguments().getString("content");
+        int getIcon = getArguments().getInt("icon");
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setTitle("No Network Connection");
+        if(getIcon == 1) {
+            builder.setIcon(R.drawable.danger);
+        }
+        builder.setTitle(getTitle);
         builder.setMessage(getContent);
 
         return builder.create();

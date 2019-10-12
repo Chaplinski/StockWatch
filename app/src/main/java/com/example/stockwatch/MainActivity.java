@@ -83,30 +83,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // From OnLongClickListener
     @Override
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
-        // use this method to delete a note
-//        final TextView name = v.findViewById(R.id.name);
-//        final String thisTitle = name.getText().toString();
-//        final int position = recyclerView.getChildLayoutPosition(v);
-
-//        new AlertDialog.Builder(this)
-//                .setIcon(android.R.drawable.ic_dialog_alert)
-//                .setMessage("Delete note \"" + thisTitle + "\"?")
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                       // saveNotes(true, thisTitle);
-//                        mAdapter.removeItem(position);
-//                    }
-//
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        //remains empty
-//                    }
-//
-//                })
-//                .show();
+//         use this method to delete a note
+        final TextView textSymbol = v.findViewById(R.id.textSymbol);
+        final String thisSymbol = textSymbol.getText().toString();
+        Toast.makeText(this, thisSymbol, Toast.LENGTH_SHORT).show();
+        databaseHandler.deleteStock(thisSymbol);
+        final int position = recyclerView.getChildLayoutPosition(v);
+        mAdapter.removeItem(position);
         return false;
     }
 
@@ -175,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     createStockDialogBox();
                     return true;
                 } else {
-                    createGeneralDialogBox("Stocks Cannot Be Added Without a Network Connection");
+                    createGeneralDialogBox("No Network Connection", "Stocks Cannot Be Added Without a Network Connection", 0);
                     return true;
                 }
             default:
@@ -188,7 +171,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //String input is where the value from the input is sent to the main activity
         Log.d(TAG, "applyTexts: " + input);
         //pass input value to be searched in the hashmap
-        searchHashMap(input);
+        //search DB for input value
+        if(stockAlreadyExists(input)){
+            //TODO add alert saying duplicate stock
+            String sMessage = "Stock Symbol " + input + " is already displayed";
+            createGeneralDialogBox("Duplicate Stock", sMessage, 1);
+        } else {
+            searchHashMap(input);
+        }
+    }
+
+    public boolean stockAlreadyExists( String sSearchedStock){
+        for (int i=0; i < aDBLoadedStocks.size(); i ++){
+            String[] aThisStock = aDBLoadedStocks.get(i);
+            if(aThisStock[0].equals(sSearchedStock)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void createStockDialogBox() {
@@ -197,12 +197,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         inputDialog.show(getSupportFragmentManager(), "Input Dialog");
     }
 
-    public void createGeneralDialogBox(String message) {
-        GeneralDialog noNetworkDialog = new GeneralDialog();
+    public void createGeneralDialogBox(String title, String message, int icon) {
+        GeneralDialog generalDialog = new GeneralDialog();
         Bundle bundle = new Bundle();
+        bundle.putString("title", title);
         bundle.putString("content", message);
-        noNetworkDialog.setArguments(bundle);
-        noNetworkDialog.show(getSupportFragmentManager(), "No Network Dialog");
+        bundle.putInt("icon", icon);
+        generalDialog.setArguments(bundle);
+        generalDialog.show(getSupportFragmentManager(), "No Network Dialog");
     }
 
     public void searchHashMap(String input){
@@ -212,44 +214,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //if more than one company fits the search then display selection
                     createSelectorDialogBox(aMatchingCompanies);
 //                    Log.d(TAG, "onClick: foo " + foo);
+                } else if (aMatchingCompanies.size() == 1){
+                    Stock stock = new Stock();
+                    stock.setSymbol(input);
+                    stock.setCompany(aMatchingCompanies.get(input).toString());
+                    databaseHandler.addStock(stock);
+
+                } else {
+                    String sDialogTitle = "Symbol Not Found: " + input;
+                    createGeneralDialogBox(sDialogTitle, "Data for stock symbol", 0);
                 }
     }
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Stock Selection");
-//        builder.setMessage("Please enter a Stock Symbol");
-//
-//        // Set up the input
-//        final EditText input = new EditText(this);
-//        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-//        input.setInputType(InputType.TYPE_CLASS_TEXT);
-//        input.setGravity(Gravity.CENTER_HORIZONTAL);
-//        input.setTextSize(24);
-//        input.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
-//        builder.setView(input);
-//
-//        // Set up the buttons
-//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                sStockSearched = input.getText().toString();
-//                HashMap aMatchingCompanies = aSymbolsAndNames(sStockSearched);
-//                Log.d(TAG, "onClick: size " + aMatchingCompanies);
-//                if (aMatchingCompanies.size() > 1){
-//                    //if more than one company fits the search then display selection
-//                    String foo = createSelectorDialogBox(aMatchingCompanies);
-//                    Log.d(TAG, "onClick: foo " + foo);
-//                }
-//            }
-//        });
-//        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.cancel();
-//            }
-//        });
-//
-//        builder.show();
-
 
     private String createSelectorDialogBox(HashMap<String, String> aMatchingCompanies){
         //for each item in hashmap - concatenate symbol and company name, create string list
@@ -265,8 +240,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             aNames[i] = value;
             aCompanies[i] = sConcatenated;
             i++;
-            // do what you have to do here
-            // In your case, another loop.
         }
         // setup the alert builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -280,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 stock.setSymbol(aSymbols[which]);
                 stock.setCompany(aNames[which]);
                 databaseHandler.addStock(stock);
-                //TODO
                 databaseHandler.dumpDbToLog();
 
             }
