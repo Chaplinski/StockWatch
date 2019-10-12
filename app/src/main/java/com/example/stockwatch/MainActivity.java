@@ -5,30 +5,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     createStockDialogBox();
                     return true;
                 } else {
-                    Toast.makeText(this, "SCOOPY DOOPY DOO", Toast.LENGTH_SHORT).show();
+                    createGeneralDialogBox("Stocks Cannot Be Added Without a Network Connection");
+                    return true;
                 }
             default:
                 return super.onOptionsItemSelected(item);
@@ -202,7 +194,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void createStockDialogBox() {
         Log.d(TAG, "createStockDialogBox: ");
         InputDialog inputDialog = new InputDialog();
-        inputDialog.show(getSupportFragmentManager(), "example dialog");
+        inputDialog.show(getSupportFragmentManager(), "Input Dialog");
+    }
+
+    public void createGeneralDialogBox(String message) {
+        GeneralDialog noNetworkDialog = new GeneralDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString("content", message);
+        noNetworkDialog.setArguments(bundle);
+        noNetworkDialog.show(getSupportFragmentManager(), "No Network Dialog");
     }
 
     public void searchHashMap(String input){
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 stock.setSymbol(aSymbols[which]);
                 stock.setCompany(aNames[which]);
                 databaseHandler.addStock(stock);
-//TODO
+                //TODO
                 databaseHandler.dumpDbToLog();
 
             }
