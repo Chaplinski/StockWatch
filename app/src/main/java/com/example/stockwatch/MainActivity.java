@@ -2,6 +2,7 @@ package com.example.stockwatch;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ClipData;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
     private RecyclerView recyclerView;
     private StockAdapter mAdapter;
     private HashMap<String, String> wCompanies = new HashMap<>();
-    private ArrayList<Stock> aStocks = new ArrayList<>();
+    private List<Stock> aStocks = new ArrayList<>();
     private String TAG = "MAINACTIVITY";
     private DatabaseHandler databaseHandler;
     private ArrayList<String[]> aDBLoadedStocks;
@@ -47,9 +48,15 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
         databaseHandler = new DatabaseHandler(this);
         aDBLoadedStocks = databaseHandler.loadStocks();
         String[] aStoredStockSymbols = getStoredStockSymbols();
+        recyclerView = findViewById(R.id.recycler);
+        mAdapter = new StockAdapter(aStocks, this);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
         //check for network connection
         if(bNetworkCheck()){
-            Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
             //for each stock in aDBLoadedStocks execute StockDownloader async task
             //we only need the stock symbol to look up the stock
             for(int i = 0; i < aDBLoadedStocks.size(); i++){
@@ -105,6 +112,8 @@ public class MainActivity extends AppCompatActivity  implements InputDialog.Inpu
 
     public void updateStockData(Stock oIncomingStock) {
         aStocks.add(oIncomingStock);
+        //TODO sort stock list
+        //TODO notify adapter of changed dataset
         Log.d(TAG, "updateStockData: " + aStocks.size());
 
 

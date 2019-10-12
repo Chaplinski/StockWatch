@@ -15,6 +15,12 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
     private List<Stock> stockList;
     private MainActivity mainAct;
 
+
+    public StockAdapter(List<Stock> stockList, MainActivity ma) {
+        this.stockList = stockList;
+        mainAct = ma;
+    }
+
     @NonNull
     @Override
     public StockViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType){

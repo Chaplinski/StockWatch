@@ -14,6 +14,10 @@ public class StockViewHolder extends RecyclerView.ViewHolder {
 
     public StockViewHolder(View view){
         super(view);
+        sSymbol = view.findViewById(R.id.textName);
+        sCompany = view.findViewById(R.id.textName);
+        sCurrentPrice = view.findViewById(R.id.textPrice);
+        sCollectiveChange = view.findViewById(R.id.textChange);
 
 
 

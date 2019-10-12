@@ -16,7 +16,7 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 public class InputDialog extends AppCompatDialogFragment {
-    private EditText input;
+    private EditText sInput;
     private InputDialogListener listener;
 
     @Override
@@ -25,12 +25,12 @@ public class InputDialog extends AppCompatDialogFragment {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.input_alert, null);
-        input = view.findViewById(R.id.input_symbol);
+        sInput = view.findViewById(R.id.input_symbol);
 
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setGravity(Gravity.CENTER_HORIZONTAL);
-        input.setTextSize(24);
-        input.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
+        sInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        sInput.setGravity(Gravity.CENTER_HORIZONTAL);
+        sInput.setTextSize(24);
+        sInput.setFilters(new InputFilter[] {new InputFilter.AllCaps()});
         builder.setMessage("Please enter a Stock Symbol:");
         builder.setView(view)
                 .setTitle("Stock Selection")
@@ -43,12 +43,12 @@ public class InputDialog extends AppCompatDialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String sInput = input.getText().toString();
-                        listener.applyTexts(sInput);
+                        String thisInput = sInput.getText().toString();
+                        listener.applyTexts(thisInput);
 
                     }
                 });
-        input = view.findViewById(R.id.input_symbol);
+        sInput = view.findViewById(R.id.input_symbol);
 
         return builder.create();
     }
