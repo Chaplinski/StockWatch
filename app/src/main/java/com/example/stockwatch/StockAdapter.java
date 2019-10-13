@@ -1,14 +1,22 @@
 package com.example.stockwatch;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static android.graphics.Color.GREEN;
+import static android.graphics.Color.RED;
 
 public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
 
@@ -16,18 +24,23 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
     private List<Stock> stockList;
     private MainActivity mainAct;
     private static DecimalFormat df2 = new DecimalFormat("#.##");
+    private boolean bHasInternet;
+    private ArrayList<String[]> aDBLoadedStocks;
 
 
-    public StockAdapter(List<Stock> stockList, MainActivity ma) {
+    public StockAdapter(List<Stock> stockList, MainActivity ma, boolean bNetCheck, ArrayList<String[]> aDBLoadedStocks) {
         this.stockList = stockList;
         mainAct = ma;
+        bHasInternet = bNetCheck;
+        this.aDBLoadedStocks = aDBLoadedStocks;
     }
 
     @NonNull
     @Override
     public StockViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType){
+        View itemView;
 
-        View itemView = LayoutInflater.from(parent.getContext())
+        itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.stock_list_row, parent, false);
 
         itemView.setOnClickListener(mainAct);
@@ -37,21 +50,47 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull StockViewHolder holder, int position){
+    public void onBindViewHolder(@NonNull StockViewHolder holder, int position) {
 
         Stock stock = stockList.get(position);
-        holder.sSymbol.setText(stock.getSymbol());
-        holder.sCompany.setText(stock.getCompany());
-        double dPrice = stock.getCurrentPrice();
-        String sPrice = Double.toString(dPrice);
-        holder.sCurrentPrice.setText(sPrice);
-        //get price and percent change and concatenate them
-        double dPriceChange = stock.getPriceChange();
-        String sPriceChange = Double.toString(dPriceChange);
-        double dPercentChange = stock.getPercentChange() * 100;
-        String sPercentChange = df2.format(dPercentChange);
-        String sCollectiveChange = "▲" + sPriceChange +" (" + sPercentChange + "%)";
-        holder.sCollectiveChange.setText(sCollectiveChange);
+
+        if (bHasInternet){
+            holder.sSymbol.setText(stock.getSymbol());
+            holder.sCompany.setText(stock.getCompany());
+            double dPrice = stock.getCurrentPrice();
+            String sPrice = Double.toString(dPrice);
+            holder.sCurrentPrice.setText(sPrice);
+            //get price and percent change and concatenate them
+            double dPriceChange = stock.getPriceChange();
+            String sPriceChange = Double.toString(dPriceChange);
+            double dPercentChange = stock.getPercentChange() * 100;
+            String sPercentChange = df2.format(dPercentChange);
+
+            if ((int)sPriceChange.charAt(0) == '-'){
+                String sCollectiveChange = "▼" + sPriceChange +" (" + sPercentChange + "%)";
+                holder.sCollectiveChange.setText(sCollectiveChange);
+                holder.sSymbol.setTextColor(RED);
+                holder.sCompany.setTextColor(RED);
+                holder.sCurrentPrice.setTextColor(RED);
+                holder.sCollectiveChange.setTextColor(RED);
+            } else {
+                String sCollectiveChange = "▲" + sPriceChange +" (" + sPercentChange + "%)";
+                holder.sCollectiveChange.setText(sCollectiveChange);
+                holder.sSymbol.setTextColor(GREEN);
+                holder.sCompany.setTextColor(GREEN);
+                holder.sCurrentPrice.setTextColor(GREEN);
+                holder.sCollectiveChange.setTextColor(GREEN);
+            }
+        } else {
+            String[] aStockInfo = aDBLoadedStocks.get(position);
+            holder.sSymbol.setText(aStockInfo[0]);
+            holder.sCompany.setText(aStockInfo[1]);
+            holder.sCurrentPrice.setText("0.0");
+            holder.sCollectiveChange.setText("0.0 (0.0)");
+        }
+
+
+
 
     }
 

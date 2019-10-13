@@ -42,6 +42,7 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         mainActivity.updateStockData(stock);
+
     }
 
     @Override
@@ -85,17 +86,25 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
 
         try {
 
-            JSONObject jObjMain = new JSONObject(s);
-            String sSymbol = jObjMain.getString("symbol");
-            String sCompanyName = jObjMain.getString("companyName");
-            Double dLatestPrice = jObjMain.getDouble("latestPrice");
-            Double dChangePrice = jObjMain.getDouble("change");
-            Double dChangePercent = jObjMain.getDouble("changePercent");
-            stock.setSymbol(sSymbol);
-            stock.setCompany(sCompanyName);
-            stock.setCurrentPrice(dLatestPrice);
-            stock.setPriceChange(dChangePrice);
-            stock.setPercentChange(dChangePercent);
+//            if(bHasInternet) {
+                JSONObject jObjMain = new JSONObject(s);
+                String sSymbol = jObjMain.getString("symbol");
+                String sCompanyName = jObjMain.getString("companyName");
+                Double dLatestPrice = jObjMain.getDouble("latestPrice");
+                Double dChangePrice = jObjMain.getDouble("change");
+                Double dChangePercent = jObjMain.getDouble("changePercent");
+                stock.setSymbol(sSymbol);
+                stock.setCompany(sCompanyName);
+                stock.setCurrentPrice(dLatestPrice);
+                stock.setPriceChange(dChangePrice);
+                stock.setPercentChange(dChangePercent);
+//            } else {
+//                stock.setSymbol("SYM");
+//                stock.setCompany("Company Name");
+//                stock.setCurrentPrice(32);
+//                stock.setPriceChange(9);
+//                stock.setPercentChange(100);
+//            }
 
         } catch (Exception e) {
             Log.d(TAG, "parseJSON: exception caught");

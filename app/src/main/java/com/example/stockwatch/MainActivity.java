@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,12 +46,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         aDBLoadedStocks = databaseHandler.loadStocks();
         String[] aStoredStockSymbols = getStoredStockSymbols();
         recyclerView = findViewById(R.id.recycler);
-        mAdapter = new StockAdapter(aStocks, this);
+        mAdapter = new StockAdapter(aStocks, this, bNetworkCheck(), aDBLoadedStocks);
         Log.d(TAG, "onCreate4: " + aStocks);
         recyclerView.setAdapter(mAdapter);
 
         //check for network connection
-        if(bNetworkCheck()){
+//        if(bNetworkCheck()){
             //Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
             //for each stock in aDBLoadedStocks execute StockDownloader async task
             //we only need the stock symbol to look up the stock
@@ -57,16 +59,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 //execute async stock downloader
                 asyncLoadStocks(aStoredStockSymbols[i]);
             }
-        } else {
+//        } else {
             //here we need aDBLoadedStocks since we do not have internet connection and need both the symbol and company name
             Toast.makeText(this, "NO SIRE", Toast.LENGTH_SHORT).show();
             //show no network error dialog
             //put all stocks on display with price, change, and percent equal to 0
             //sort stock list
             //notify adapter of changed dataset
-        }
+//        }
 
 
+
+    }
+
+    public void sortStockList(){
 
     }
 
@@ -138,11 +144,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //TODO sort stock list
         //TODO notify adapter of changed dataset
 //        recyclerView.setAdapter(mAdapter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Log.d(TAG, "updateStockData: " + aStocks.size());
 
-
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
