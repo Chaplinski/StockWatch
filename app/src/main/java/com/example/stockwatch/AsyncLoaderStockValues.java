@@ -46,7 +46,7 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) { // 0 == city, 1 == fshrenheit
+    protected String doInBackground(String... params) {
         String sLocalURL = stockURL;
         sLocalURL += sStockSymbol + "/quote";
         Uri.Builder buildURL = Uri.parse(sLocalURL).buildUpon();
@@ -83,6 +83,7 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     }
 
     private void parseJSON(String s) {
+        Log.d(TAG, "parseJSON: " + s);
 
         try {
 

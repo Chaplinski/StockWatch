@@ -88,7 +88,6 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
             }
         } else {
             String[] aStockInfo = aDBLoadedStocks.get(position);
-            Log.d(TAG, "updateStockData: " + aStockInfo[0]);
             holder.sSymbol.setText(aStockInfo[0]);
             holder.sCompany.setText(aStockInfo[1]);
             holder.sCurrentPrice.setText("0.0");

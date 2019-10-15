@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -61,9 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 doRefresh();
             }
         });
-        getInfoForDBStocks();
-        
-
 
         //check for network connection
         if(bNetworkCheck()){
@@ -76,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //show no network error dialog
             createGeneralDialogBox("No Network Connection", "You are not connected to the internet", 0);
             //put all stocks on display with price, change, and percent equal to 0
+            getInfoForDBStocks();
             //sort stock list
             //notify adapter of changed dataset
         }
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //clear out aStoredStockSymbols or stocks added this session will disappear on reload
         aStoredStockSymbols = getStoredStockSymbols();
         if(bNetworkCheck()) {
-
+            Log.d(TAG, "doRefresh: " + aStoredStockSymbols.length);
             //clear out the aStocks array or else every stock will appear double on swype
             aStocks.clear();
             getInfoForDBStocks();
@@ -131,13 +130,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // From OnLongClickListener
     @Override
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
-//         use this method to delete a note
+//         use this method to delete a stock
         final TextView textSymbol = v.findViewById(R.id.textSymbol);
         final String thisSymbol = textSymbol.getText().toString();
-        Toast.makeText(this, thisSymbol, Toast.LENGTH_SHORT).show();
-        databaseHandler.deleteStock(thisSymbol);
         final int position = recyclerView.getChildLayoutPosition(v);
-        mAdapter.removeItem(position);
+//        Toast.makeText(this, thisSymbol, Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Delete Stock");
+        builder.setMessage("Delete Stock Symbol " + thisSymbol + "?");
+        builder.setIcon(R.drawable.trashcan);
+
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing but close the dialog
+                databaseHandler.deleteStock(thisSymbol);
+
+                mAdapter.removeItem(position);
+                //TODO
+                aDBLoadedStocks.remove(thisSymbol);
+                aStoredStockSymbols = getStoredStockSymbols();
+                //aStoredStockSymbols
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Do nothing
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+
         return false;
     }
 
@@ -185,8 +215,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         aStocks.add(oIncomingStock);
         Log.d(TAG, "updateStockData: symbol - " + oIncomingStock.getSymbol());
 
-        //sortStockList();
-//        recyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
+
+        mAdapter.notifyDataSetChanged();
+        sortStockList();
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Log.d(TAG, "updateStockData: " + aStocks.size());
@@ -224,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //pass input value to be searched in the hashmap
         //search DB for input value
         if(stockAlreadyExists(input)){
-            //TODO add alert saying duplicate stock
             String sMessage = "Stock Symbol " + input + " is already displayed";
             createGeneralDialogBox("Duplicate Stock", sMessage, 1);
         } else {
@@ -270,6 +302,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     stock.setSymbol(input);
                     stock.setCompany(aMatchingCompanies.get(input).toString());
                     databaseHandler.addStock(stock);
+                    asyncLoadStocks(input);
+                    mAdapter.notifyDataSetChanged();
+                    aStoredStockSymbols = getStoredStockSymbols();
+                    sortStockList();
 
                 } else {
                     String sDialogTitle = "Symbol Not Found: " + input;
@@ -299,14 +335,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.setItems(aCompanies, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.d(TAG, "onClick: which");
-                Stock stock = new Stock();
-                stock.setSymbol(aSymbols[which]);
-                stock.setCompany(aNames[which]);
-                databaseHandler.addStock(stock);
-                databaseHandler.dumpDbToLog();
-                asyncLoadStocks(stock.getSymbol());
-                //TODO right here
+                String sThisSymbol = aSymbols[which];
+                if(!Arrays.asList(aStoredStockSymbols).contains(sThisSymbol)) {
+                    Log.d(TAG, "onClick: which");
+                    Stock stock = new Stock();
+                    stock.setSymbol(sThisSymbol);
+                    stock.setCompany(aNames[which]);
+                    databaseHandler.addStock(stock);
+                    databaseHandler.dumpDbToLog();
+                    aStoredStockSymbols = getStoredStockSymbols();
+                    asyncLoadStocks(stock.getSymbol());
+                } else {
+                    String sMessage = "Stock Symbol " + sThisSymbol + " is already displayed";
+                    createGeneralDialogBox("Duplicate Stock", sMessage, 1);
+                }
 
             }
         });
