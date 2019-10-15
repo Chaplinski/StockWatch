@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,12 +31,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         View.OnLongClickListener, InputDialog.InputDialogListener {
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swiper; // The SwipeRefreshLayout
+
     private StockAdapter mAdapter;
     private HashMap<String, String> wCompanies = new HashMap<>();
     private List<Stock> aStocks = new ArrayList<>();
     private String TAG = "MAINACTIVITY";
     private DatabaseHandler databaseHandler;
     private ArrayList<String[]> aDBLoadedStocks;
+    private String[] aStoredStockSymbols;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,35 +48,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         asyncLoadCompanies();
         databaseHandler = new DatabaseHandler(this);
         aDBLoadedStocks = databaseHandler.loadStocks();
-        String[] aStoredStockSymbols = getStoredStockSymbols();
+        aStoredStockSymbols = getStoredStockSymbols();
         recyclerView = findViewById(R.id.recycler);
         mAdapter = new StockAdapter(aStocks, this, bNetworkCheck(), aDBLoadedStocks);
         Log.d(TAG, "onCreate4: " + aStocks);
         recyclerView.setAdapter(mAdapter);
 
-        //check for network connection
-//        if(bNetworkCheck()){
-            //Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
-            //for each stock in aDBLoadedStocks execute StockDownloader async task
-            //we only need the stock symbol to look up the stock
-            for(int i = 0; i < aDBLoadedStocks.size(); i++){
-                //execute async stock downloader
-                asyncLoadStocks(aStoredStockSymbols[i]);
+        swiper = findViewById(R.id.swiper);
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                doRefresh();
             }
-//        } else {
+        });
+        getInfoForDBStocks();
+        
+
+
+        //check for network connection
+        if(bNetworkCheck()){
+//            Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
+//            for each stock in aDBLoadedStocks execute StockDownloader async task
+//            we only need the stock symbol to look up the stock
+            getInfoForDBStocks();
+        } else {
             //here we need aDBLoadedStocks since we do not have internet connection and need both the symbol and company name
-            Toast.makeText(this, "NO SIRE", Toast.LENGTH_SHORT).show();
             //show no network error dialog
+            createGeneralDialogBox("No Network Connection", "You are not connected to the internet", 0);
             //put all stocks on display with price, change, and percent equal to 0
             //sort stock list
             //notify adapter of changed dataset
-//        }
+        }
 
 
 
     }
 
+    private void getInfoForDBStocks(){
+        for(int i = 0; i < aDBLoadedStocks.size(); i++){
+            //execute async stock downloader
+            asyncLoadStocks(aStoredStockSymbols[i]);
+        }
+    }
+
+    private void doRefresh() {
+        //clear out aStoredStockSymbols or stocks added this session will disappear on reload
+        aStoredStockSymbols = getStoredStockSymbols();
+        if(bNetworkCheck()) {
+
+            //clear out the aStocks array or else every stock will appear double on swype
+            aStocks.clear();
+            getInfoForDBStocks();
+            swiper.setRefreshing(false);
+            sortStockList();
+            mAdapter.notifyDataSetChanged();
+        } else {
+            swiper.setRefreshing(false);
+            createGeneralDialogBox("No Network Connection", "Stocks Cannot Be Updated Without A Network Connection", 0);
+        }
+    }
+
     public void sortStockList(){
+
+        Collections.sort(aStocks, new Comparator<Stock>() {
+            public int compare(Stock s1, Stock s2) {
+                return s1.getSymbol().compareTo(s2.getSymbol());
+            }
+        });
 
     }
 
@@ -115,8 +157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private String[] getStoredStockSymbols(){
-        String[] aStoredStockSymbols = new String [aDBLoadedStocks.size()];
         aDBLoadedStocks = databaseHandler.loadStocks();
+        String[] aStoredStockSymbols = new String [aDBLoadedStocks.size()];
         for(int i = 0; i < aDBLoadedStocks.size(); i++){
             String[] aRow = aDBLoadedStocks.get(i);
             aStoredStockSymbols[i] = aRow[0];
@@ -135,14 +177,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void updateCompanyData(HashMap<String, String> wData) {
-        wCompanies = new HashMap<String, String>(wData);
+        wCompanies = new HashMap<>(wData);
 
     }
 
     public void updateStockData(Stock oIncomingStock) {
         aStocks.add(oIncomingStock);
-        //TODO sort stock list
-        //TODO notify adapter of changed dataset
+        Log.d(TAG, "updateStockData: symbol - " + oIncomingStock.getSymbol());
+
+        //sortStockList();
 //        recyclerView.setAdapter(mAdapter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -262,6 +305,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 stock.setCompany(aNames[which]);
                 databaseHandler.addStock(stock);
                 databaseHandler.dumpDbToLog();
+                asyncLoadStocks(stock.getSymbol());
+                //TODO right here
 
             }
         });

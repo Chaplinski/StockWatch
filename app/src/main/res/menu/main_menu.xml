@@ -7,6 +7,8 @@
         android:id="@+id/menuAddStock"
         android:title="Add Stock"
         android:iconTint="@android:color/background_light"
+        android:icon="@drawable/ic_add_circle_outline_black_24dp"
+        android:tint="@android:color/white"
         app:showAsAction="always" />
 
 

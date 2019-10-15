@@ -55,6 +55,11 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
         Stock stock = stockList.get(position);
 
         if (bHasInternet){
+//            Log.d(TAG, "onBindViewHolder: symbol - " + stock.getSymbol());
+//            Log.d(TAG, "onBindViewHolder: company - " + stock.getCompany());
+//            Log.d(TAG, "onBindViewHolder: price - " + stock.getCurrentPrice());
+//            Log.d(TAG, "onBindViewHolder: percent change - " + stock.getPercentChange());
+//            Log.d(TAG, "onBindViewHolder: price change - " + stock.getPriceChange());
             holder.sSymbol.setText(stock.getSymbol());
             holder.sCompany.setText(stock.getCompany());
             double dPrice = stock.getCurrentPrice();
@@ -83,11 +88,13 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
             }
         } else {
             String[] aStockInfo = aDBLoadedStocks.get(position);
+            Log.d(TAG, "updateStockData: " + aStockInfo[0]);
             holder.sSymbol.setText(aStockInfo[0]);
             holder.sCompany.setText(aStockInfo[1]);
             holder.sCurrentPrice.setText("0.0");
-            holder.sCollectiveChange.setText("0.0 (0.0)");
+            holder.sCollectiveChange.setText("0.0 (0.0%)");
         }
+
 
 
 
