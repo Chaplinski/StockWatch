@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String TAG = "MAINACTIVITY";
     private DatabaseHandler databaseHandler;
     private ArrayList<String[]> aDBLoadedStocks;
+    private ArrayList<String[]> aDBLoadedStocks2 = new ArrayList<>();
     private String[] aStoredStockSymbols;
 
     @Override
@@ -55,17 +56,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "onCreate4: " + aStocks);
         recyclerView.setAdapter(mAdapter);
 
-        swiper = findViewById(R.id.swiper);
-        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                doRefresh();
-            }
-        });
-
         //check for network connection
         if(bNetworkCheck()){
-//            Toast.makeText(this, "CONNECTION!", Toast.LENGTH_SHORT).show();
 //            for each stock in aDBLoadedStocks execute StockDownloader async task
 //            we only need the stock symbol to look up the stock
             getInfoForDBStocks();
@@ -73,13 +65,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //here we need aDBLoadedStocks since we do not have internet connection and need both the symbol and company name
             //show no network error dialog
             createGeneralDialogBox("No Network Connection", "You are not connected to the internet", 0);
-            //put all stocks on display with price, change, and percent equal to 0
             getInfoForDBStocks();
-            //sort stock list
-            //notify adapter of changed dataset
         }
-
-
+        swiper = findViewById(R.id.swiper);
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                doRefresh();
+            }
+        });
 
     }
 
@@ -108,13 +102,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void sortStockList(){
-
         Collections.sort(aStocks, new Comparator<Stock>() {
             public int compare(Stock s1, Stock s2) {
                 return s1.getSymbol().compareTo(s2.getSymbol());
             }
         });
-
     }
 
     @Override
@@ -146,12 +138,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(DialogInterface dialog, int which) {
                 // Do nothing but close the dialog
                 databaseHandler.deleteStock(thisSymbol);
-
                 mAdapter.removeItem(position);
-                //TODO
                 aDBLoadedStocks.remove(thisSymbol);
                 aStoredStockSymbols = getStoredStockSymbols();
-                //aStoredStockSymbols
             }
         });
 
@@ -159,8 +148,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                // Do nothing
                 dialog.dismiss();
             }
         });
@@ -170,8 +157,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return false;
     }
-
-
 
     private boolean bNetworkCheck(){
         ConnectivityManager cm =
@@ -218,15 +203,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(mAdapter);
 
         mAdapter.notifyDataSetChanged();
-        sortStockList();
-
-
+        if (bNetworkCheck()) {
+            sortStockList();
+        }
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Log.d(TAG, "updateStockData: " + aStocks.size());
-
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -296,7 +278,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (aMatchingCompanies.size() > 1){
                     //if more than one company fits the search then display selection
                     createSelectorDialogBox(aMatchingCompanies);
-//                    Log.d(TAG, "onClick: foo " + foo);
                 } else if (aMatchingCompanies.size() == 1){
                     Stock stock = new Stock();
                     stock.setSymbol(input);
@@ -382,5 +363,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return aMatchingCompanies;
     }
-
 }

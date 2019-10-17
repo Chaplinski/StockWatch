@@ -75,7 +75,6 @@ public class AsyncLoaderCompanyNames extends AsyncTask<String, Void, String> {
 
         try {
             JSONArray jsonArray = new JSONArray(s);
-//            JSONObject jObjMain = new JSONObject(s);
             Log.d(TAG, "parseJSON: length " + jsonArray.length());
 
             for(int i = 0; i < jsonArray.length(); i++){

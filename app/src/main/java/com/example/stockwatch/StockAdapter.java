@@ -86,17 +86,14 @@ public class StockAdapter extends RecyclerView.Adapter<StockViewHolder> {
                 holder.sCurrentPrice.setTextColor(GREEN);
                 holder.sCollectiveChange.setTextColor(GREEN);
             }
-        } else {
+        }
+        else {
             String[] aStockInfo = aDBLoadedStocks.get(position);
             holder.sSymbol.setText(aStockInfo[0]);
             holder.sCompany.setText(aStockInfo[1]);
             holder.sCurrentPrice.setText("0.0");
             holder.sCollectiveChange.setText("0.0 (0.0%)");
         }
-
-
-
-
 
     }
 

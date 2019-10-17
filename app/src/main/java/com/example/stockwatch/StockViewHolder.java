@@ -19,9 +19,6 @@ public class StockViewHolder extends RecyclerView.ViewHolder {
         sCurrentPrice = view.findViewById(R.id.textPrice);
         sCollectiveChange = view.findViewById(R.id.textChange);
 
-
-
-
     }
 
 

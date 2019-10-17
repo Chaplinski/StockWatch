@@ -67,7 +67,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 null, // The values for the WHERE clause
                 null, // don't group the rows
                 null, // don't filter by row groups
-                null); // The sort order
+                STOCKSYMBOL); // The sort order
 
         if (cursor != null) {
             cursor.moveToFirst();
