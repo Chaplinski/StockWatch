@@ -1,9 +1,6 @@
 package com.example.stockwatch;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -15,11 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class AsyncLoaderCompanyNames extends AsyncTask<String, Void, String> {
 
@@ -75,7 +68,6 @@ public class AsyncLoaderCompanyNames extends AsyncTask<String, Void, String> {
 
         try {
             JSONArray jsonArray = new JSONArray(s);
-            Log.d(TAG, "parseJSON: length " + jsonArray.length());
 
             for(int i = 0; i < jsonArray.length(); i++){
                 JSONObject oCompanies = jsonArray.getJSONObject(i);

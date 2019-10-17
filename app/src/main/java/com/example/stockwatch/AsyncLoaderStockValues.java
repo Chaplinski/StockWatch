@@ -1,13 +1,10 @@
 package com.example.stockwatch;
 
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -15,10 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 
 public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
 
@@ -83,11 +76,7 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
     }
 
     private void parseJSON(String s) {
-        Log.d(TAG, "parseJSON: " + s);
-
         try {
-
-//            if(bHasInternet) {
                 JSONObject jObjMain = new JSONObject(s);
                 String sSymbol = jObjMain.getString("symbol");
                 String sCompanyName = jObjMain.getString("companyName");
@@ -99,13 +88,6 @@ public class AsyncLoaderStockValues extends AsyncTask<String, Void, String> {
                 stock.setCurrentPrice(dLatestPrice);
                 stock.setPriceChange(dChangePrice);
                 stock.setPercentChange(dChangePercent);
-//            } else {
-//                stock.setSymbol("SYM");
-//                stock.setCompany("Company Name");
-//                stock.setCurrentPrice(32);
-//                stock.setPriceChange(9);
-//                stock.setPercentChange(100);
-//            }
 
         } catch (Exception e) {
             Log.d(TAG, "parseJSON: exception caught");
