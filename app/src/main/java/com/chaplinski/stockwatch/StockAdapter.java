@@ -1,4 +1,4 @@
-package com.example.stockwatch;
+package com.chaplinski.stockwatch;
 
 import android.view.LayoutInflater;
 import android.view.View;

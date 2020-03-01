@@ -1,4 +1,4 @@
-package com.example.stockwatch;
+package com.chaplinski.stockwatch;
 
 public class Stock {
 

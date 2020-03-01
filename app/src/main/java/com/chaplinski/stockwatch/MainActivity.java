@@ -1,4 +1,4 @@
-package com.example.stockwatch;
+package com.chaplinski.stockwatch;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;

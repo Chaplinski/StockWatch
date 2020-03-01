@@ -1,5 +1,5 @@
 
-package com.example.stockwatch;
+package com.chaplinski.stockwatch;
 
 
 import android.content.ContentValues;

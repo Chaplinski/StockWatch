@@ -1,4 +1,4 @@
-package com.example.stockwatch;
+package com.chaplinski.stockwatch;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.example.stockwatch", appContext.getPackageName());
+        assertEquals("com.chaplinski.stockwatch", appContext.getPackageName());
     }
 }
